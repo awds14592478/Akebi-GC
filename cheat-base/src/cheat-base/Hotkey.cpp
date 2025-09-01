@@ -111,20 +111,12 @@ static ImGuiKey LegacyToInput(short key)
 	case VK_F10: return ImGuiKey_F10;
 	case VK_F11: return ImGuiKey_F11;
 	case VK_F12: return ImGuiKey_F12;
-	case VK_LBUTTON: return ImGuiMouseButton_Left;
-	case VK_RBUTTON: return ImGuiMouseButton_Right;
-	case VK_MBUTTON: return ImGuiMouseButton_Middle;
-	case VK_XBUTTON1: return 3;
-	case VK_XBUTTON2: return 4;
 	default: return ImGuiKey_None;
 	}
 }
 
 static short InputToLegacy(ImGuiKey inputkey)
 {
-	auto& io = ImGui::GetIO();
-	if (inputkey > 4)
-		return io.KeyMap[inputkey];
 
 	switch (inputkey)
 	{
@@ -270,10 +262,10 @@ bool Hotkey::operator==(const Hotkey& c2) const
 
 std::string GetKeyName(short key)
 {
-    if (key > 5)
-        return ImGui::GetKeyName(key);
-    
-    switch (key)
+	ImGuiKey imgui_key = LegacyToInput(key);
+
+	ImGui::GetKeyName(imgui_key);
+    switch (imgui_key != ImGuiKey_None)
     {
     case ImGuiMouseButton_Left:
         return "LMB";
@@ -311,7 +303,7 @@ bool Hotkey::IsPressed() const
 {
 	for (short key : m_Keys)
 	{
-		if (!IsKeyDown(key))
+		if (!IsKeyDown(static_cast<ImGuiKey>(key)))
 			return false;
 	}
 
@@ -330,7 +322,7 @@ bool Hotkey::IsPressed(short legacyKey) const
 
     for (short key : keysClone)
     {
-		bool result = IsKeyDown(key);
+		bool result = IsKeyDown(static_cast<ImGuiKey>(key));
         if (!result)
             return false;
     }
@@ -343,13 +335,13 @@ bool Hotkey::IsReleased() const
 	bool released = false;
 	for (short key : m_Keys)
 	{
-		if (IsKeyReleased(key))
+		if (IsKeyReleased(static_cast<ImGuiKey>(key)))
 		{
 			released = true;
 			continue;
 		}
 
-		if (!IsKeyDown(key))
+		if (!IsKeyDown(static_cast<ImGuiKey>(key)))
 			return false;
 	}
 
@@ -372,18 +364,17 @@ Hotkey Hotkey::GetPressedHotkey()
 
     auto& io = ImGui::GetIO();
 
-    for (ImGuiKey i = ImGuiKey_NamedKey_BEGIN; i < ImGuiKey_NamedKey_END - 4; i++)
+    for (int i = ImGuiKey_NamedKey_BEGIN; i < ImGuiKey_NamedKey_END; i++)
     {
-        bool isKeyDown = io.KeysDown[i];
-        if (isKeyDown)
-            hotkey.m_Keys.insert(InputToLegacy(i));
+        if (ImGui::IsKeyDown(static_cast<ImGuiKey>(i)))
+            hotkey.m_Keys.insert(LegacyToInput(i));
     }
 
-    for (ImGuiKey i = 0; i < ImGuiMouseButton_COUNT; i++)
+    for (int i = 0; i < ImGuiMouseButton_COUNT; i++)
     {
-        bool isMouseButtonDown = io.MouseDown[i];
-        if (isMouseButtonDown)
-            hotkey.m_Keys.insert(InputToLegacy(i));
+        //bool isMouseButtonDown = io.MouseDown[i];
+        if (io.MouseDown[i])
+            hotkey.m_Keys.insert(InputToLegacy(static_cast<ImGuiKey>(i)));
     }
     return hotkey;
 }
