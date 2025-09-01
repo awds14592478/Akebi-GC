@@ -144,7 +144,7 @@ namespace cheat::feature
 		styles.ChildBorderSize = 1.0;
 		styles.ChildRounding = 5.0;
 		styles.CircleTessellationMaxError = 0.30000001192092896;
-		styles.ColorButtonPosition = 1;
+		styles.ColorButtonPosition = (ImGuiDir)1;
 		styles.ColumnsMinSpacing = 6.0;
 		styles.CurveTessellationTol = 1.25;
 		styles.DisabledAlpha = 0.6000000238418579;
@@ -166,11 +166,11 @@ namespace cheat::feature
 		styles.ScrollbarSize = 14.0;
 		styles.SelectableTextAlign = ImVec2(0.0, 0.0);
 		styles.TabBorderSize = 0.0;
-		styles.TabMinWidthForCloseButton = 0.0;
+		styles.TabCloseButtonMinWidthUnselected = 0.0;
 		styles.TabRounding = 4.0;
 		styles.TouchExtraPadding = ImVec2(0.0, 0.0);
 		styles.WindowBorderSize = 1.0;
-		styles.WindowMenuButtonPosition = 0;
+		styles.WindowMenuButtonPosition = (ImGuiDir)0;
 		styles.WindowMinSize = ImVec2(32.0, 32.0);
 		styles.WindowPadding = ImVec2(8.0, 8.0);
 		styles.WindowRounding = 0.0;
@@ -287,7 +287,7 @@ namespace cheat::feature
 		stylesData["LogSliderDeadzone"] = style.LogSliderDeadzone;
 		stylesData["TabRounding"] = style.TabRounding;
 		stylesData["TabBorderSize"] = style.TabBorderSize;
-		stylesData["TabMinWidthForCloseButton"] = style.TabMinWidthForCloseButton;
+		stylesData["TabCloseButtonMinWidthUnselected"] = style.TabCloseButtonMinWidthUnselected;
 		stylesData["ColorButtonPosition"] = style.ColorButtonPosition;
 		stylesData["ButtonTextAlign"] = { style.ButtonTextAlign.x, style.ButtonTextAlign.y };
 		stylesData["SelectableTextAlign"] = { style.SelectableTextAlign.x, style.SelectableTextAlign.y };
@@ -374,7 +374,7 @@ namespace cheat::feature
 			style.LogSliderDeadzone = std::any_cast<float>(theme.styles["LogSliderDeadzone"]);
 			style.TabRounding = std::any_cast<float>(theme.styles["TabRounding"]);
 			style.TabBorderSize = std::any_cast<float>(theme.styles["TabBorderSize"]);
-			style.TabMinWidthForCloseButton = std::any_cast<float>(theme.styles["TabMinWidthForCloseButton"]);
+			style.TabCloseButtonMinWidthUnselected = std::any_cast<float>(theme.styles["TabMinWidthForCloseButton"]);
 			style.ColorButtonPosition = ImGuiDir(std::any_cast<int>(theme.styles["ColorButtonPosition"]));
 			style.ButtonTextAlign = std::any_cast<ImVec2>(theme.styles["ButtonTextAlign"]);
 			style.SelectableTextAlign = std::any_cast<ImVec2>(theme.styles["SelectableTextAlign"]);

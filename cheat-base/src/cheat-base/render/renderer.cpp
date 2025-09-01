@@ -118,7 +118,10 @@ namespace renderer
 		if (!_isCustomFontLoaded)
 		{
 			ImGuiIO& io = ImGui::GetIO();
-			return fontSize / io.FontDefault->FontSize;
+			if(io.FontDefault == nullptr) {
+				return; // 或处理错误
+			}
+			return fontSize / io.FontDefault->LegacySize;
 		}
 
 		int fontSizeInt = static_cast<int>(fontSize);
@@ -207,11 +210,13 @@ namespace renderer
 			pDescriptorHeapImGuiRender->GetGPUDescriptorHandleForHeapStart());
 
 		ImGui_ImplDX12_CreateDeviceObjects();
-		ImGui::GetIO().ImeWindowHandle = window;
+		ImGuiViewport* viewport = ImGui::GetMainViewport(); // 获取主视口
+		viewport->PlatformHandle = reinterpret_cast<void*>(window);
 
 		static const std::string imguiPath = (util::GetCurrentPath() / "imgui.ini").string();
 		ImGui::GetIO().IniFilename = imguiPath.c_str();
-		io.SetPlatformImeDataFn = nullptr; // F**king bug take 4 hours of my life
+		ImGuiPlatformIO& platform_io = ImGui::GetPlatformIO();
+		platform_io.Platform_SetImeDataFn = nullptr; // F**king bug take 4 hours of my life
 	}
 
 	static void OnInitializeDX11(HWND window, ID3D11Device* pDevice, ID3D11DeviceContext* pContext, IDXGISwapChain* pChain)
@@ -239,8 +244,8 @@ namespace renderer
 		pChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<LPVOID*>(&pBackBuffer));
 		pDevice->CreateRenderTargetView(pBackBuffer, nullptr, &mainRenderTargetView);
 		pBackBuffer->Release();
-
-		io.SetPlatformImeDataFn = nullptr; // F**king bug take 4 hours of my life
+		ImGuiPlatformIO& platform_io = ImGui::GetPlatformIO();
+		platform_io.Platform_SetImeDataFn = nullptr; // F**king bug take 4 hours of my life
 	}
 
 	static void OnRenderDX11(ID3D11DeviceContext* pContext)

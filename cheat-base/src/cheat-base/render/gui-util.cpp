@@ -311,8 +311,8 @@ bool ImGui::HotkeyWidget(const char* label, Hotkey& hotkey, const ImVec2& size)
 		return false;
 
 
-    const bool focus_requested = (ImGui::GetItemStatusFlags() & ImGuiItemStatusFlags_FocusedByTabbing) != 0 || g.NavActivateInputId == id;
-    const bool hovered = ImGui::ItemHoverable(frame_bb, id);
+    const bool focus_requested = (ImGui::GetItemStatusFlags() & ImGui::IsItemFocused()) != 0 || g.NavActivateId == id;
+    const bool hovered = ImGui::ItemHoverable(frame_bb, id,NULL);
 	if (hovered) 
     {
 		ImGui::SetHoveredID(id);
@@ -329,7 +329,7 @@ bool ImGui::HotkeyWidget(const char* label, Hotkey& hotkey, const ImVec2& size)
 		if (g.ActiveId != id) 
         {
 			memset(io.MouseDown, 0, sizeof(io.MouseDown));
-			memset(io.KeysDown, 0, sizeof(io.KeysDown));
+			//memset(ImGui::IsKeyDown, 0, sizeof(io.KeysDown));
 
             _initHotkey = hotkey;
             _currHotkey = Hotkey();
